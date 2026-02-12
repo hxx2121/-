@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-02-11T03:28:37.592424+00:00",
+  "dataset": {
+    "count": 1
+  },
+  "models": {
+    "qwen-max": {
+      "provider": "qwen",
+      "model_id": "qwen-max",
+      "avg_latency_ms": 5824.1391999999905,
+      "semantic_jaccard_mean": 0.0,
+      "logic_score_mean": 4.0,
+      "utility_score_mean": 4.0,
+      "efficiency_score": 0.2677600665863317,
+      "total_score": 0.26694001664658296
+    },
+    "qwen-plus": {
+      "provider": "qwen",
+      "model_id": "qwen-plus",
+      "avg_latency_ms": 1677.7782999997726,
+      "semantic_jaccard_mean": 0.0,
+      "logic_score_mean": 4.0,
+      "utility_score_mean": 4.0,
+      "efficiency_score": 0.9294862736037733,
+      "total_score": 0.4323715684009434
+    },
+    "glm-4": {
+      "provider": "zhipu",
+      "model_id": "glm-4",
+      "avg_latency_ms": 1559.4719000000623,
+      "semantic_jaccard_mean": 0.0,
+      "logic_score_mean": 4.0,
+      "utility_score_mean": 4.0,
+      "efficiency_score": 1.0,
+      "total_score": 0.45
+    },
+    "glm-4-flash": {
+      "provider": "zhipu",
+      "model_id": "glm-4-flash",
+      "avg_latency_ms": 2083.03160000105,
+      "semantic_jaccard_mean": 0.0,
+      "logic_score_mean": 4.0,
+      "utility_score_mean": 4.0,
+      "efficiency_score": 0.7486549411920954,
+      "total_score": 0.38716373529802384
+    }
+  },
+  "best_model": "glm-4"
+}

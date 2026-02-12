@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780">
+  <defs>
+    <style>
+      .t1{font:700 20px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#111827}
+      .t2{font:600 13px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#111827}
+      .t3{font:500 12px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#374151}
+      .lane{fill:#f9fafb; stroke:#e5e7eb; stroke-width:2}
+      .step{fill:#ffffff; stroke:#d1d5db; stroke-width:2}
+      .io{fill:#eef2ff; stroke:#c7d2fe; stroke-width:2}
+      .svc{fill:#ecfeff; stroke:#a5f3fc; stroke-width:2}
+      .db{fill:#fff7ed; stroke:#fed7aa; stroke-width:2}
+      .arrow{stroke:#111827; stroke-width:2; fill:none; marker-end:url(#m)}
+      .dash{stroke:#6b7280; stroke-width:2; stroke-dasharray:6 6; fill:none; marker-end:url(#m2)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#111827"/>
+    </marker>
+    <marker id="m2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="780" fill="#ffffff"/>
+  <text x="40" y="54" class="t1">编程问答对话：发送消息端到端流程图</text>
+  <text x="40" y="80" class="t3">覆盖：会话消息落库、问答匹配与回答推荐、模型生成、质量评估与返回</text>
+
+  <!-- Lanes -->
+  <rect x="40" y="110" width="360" height="620" rx="14" class="lane"/>
+  <rect x="420" y="110" width="380" height="620" rx="14" class="lane"/>
+  <rect x="820" y="110" width="340" height="620" rx="14" class="lane"/>
+
+  <text x="60" y="142" class="t2">前端（Vue3）</text>
+  <text x="440" y="142" class="t2">后端（Django /api/qa/*）</text>
+  <text x="840" y="142" class="t2">外部与存储</text>
+
+  <!-- Frontend steps -->
+  <rect x="70" y="170" width="300" height="64" rx="12" class="io"/>
+  <text x="88" y="198" class="t2">用户输入问题/代码</text>
+  <text x="88" y="218" class="t3">选择会话 Thread（可新建）</text>
+
+  <rect x="70" y="260" width="300" height="78" rx="12" class="step"/>
+  <text x="88" y="292" class="t2">发送请求</text>
+  <text x="88" y="312" class="t3">POST /api/qa/threads/{id}/messages/</text>
+  <text x="88" y="330" class="t3">Header: Authorization: Token ...</text>
+
+  <rect x="70" y="364" width="300" height="72" rx="12" class="step"/>
+  <text x="88" y="394" class="t2">渲染响应</text>
+  <text x="88" y="414" class="t3">展示答案 + 匹配结果 Top-3</text>
+
+  <!-- Backend steps -->
+  <rect x="440" y="170" width="340" height="70" rx="12" class="step"/>
+  <text x="458" y="200" class="t2">鉴权与入参校验</text>
+  <text x="458" y="220" class="t3">校验 Token，解析 content</text>
+
+  <rect x="440" y="260" width="340" height="78" rx="12" class="db"/>
+  <text x="458" y="292" class="t2">落库：用户消息</text>
+  <text x="458" y="312" class="t3">ConversationMessage(role=user)</text>
+  <text x="458" y="330" class="t3">关联 ConversationThread</text>
+
+  <rect x="440" y="360" width="340" height="104" rx="12" class="svc"/>
+  <text x="458" y="392" class="t2">问答匹配与回答推荐</text>
+  <text x="458" y="412" class="t3">TF-IDF 召回候选 Q-A（ProgrammingQAPair）</text>
+  <text x="458" y="430" class="t3">语义/质量融合排序，输出 Top-3</text>
+  <text x="458" y="448" class="t3">生成 tool_events（可追踪）</text>
+
+  <rect x="440" y="486" width="340" height="92" rx="12" class="svc"/>
+  <text x="458" y="516" class="t2">构造提示词上下文</text>
+  <text x="458" y="536" class="t3">PromptTemplate + question + matches</text>
+  <text x="458" y="554" class="t3">可选：代码片段抽取与结构化</text>
+
+  <rect x="440" y="600" width="340" height="92" rx="12" class="svc"/>
+  <text x="458" y="630" class="t2">保存并返回 assistant 消息</text>
+  <text x="458" y="650" class="t3">ConversationMessage(role=assistant)</text>
+  <text x="458" y="668" class="t3">附带 evaluation 与 tool_events</text>
+
+  <!-- External & storage -->
+  <rect x="840" y="170" width="300" height="90" rx="12" class="db"/>
+  <text x="858" y="200" class="t2">MySQL</text>
+  <text x="858" y="220" class="t3">会话/消息/评估/数据集表</text>
+  <text x="858" y="240" class="t3">ProgrammingQAPair（数据集）</text>
+
+  <rect x="840" y="290" width="300" height="88" rx="12" class="step"/>
+  <text x="858" y="320" class="t2">TF-IDF 索引</text>
+  <text x="858" y="340" class="t3">output/qa_index/index.joblib</text>
+  <text x="858" y="360" class="t3">用于快速召回候选</text>
+
+  <rect x="840" y="410" width="300" height="96" rx="12" class="step"/>
+  <text x="858" y="442" class="t2">代码静态分析</text>
+  <text x="858" y="462" class="t3">AST 解析 + pylint 评分报告</text>
+  <text x="858" y="482" class="t3">支持四维质量评估</text>
+
+  <rect x="840" y="540" width="300" height="102" rx="12" class="io"/>
+  <text x="858" y="572" class="t2">大模型推理</text>
+  <text x="858" y="592" class="t3">Qwen（OpenAI 兼容接口）</text>
+  <text x="858" y="610" class="t3">生成最终回答文本</text>
+
+  <!-- Arrows -->
+  <path d="M220,234 L220,260" class="arrow"/>
+  <path d="M370,300 C395,300 410,300 440,300" class="arrow"/>
+  <path d="M610,240 L610,260" class="arrow"/>
+  <path d="M610,338 L610,360" class="arrow"/>
+  <path d="M610,464 L610,486" class="arrow"/>
+  <path d="M610,578 L610,600" class="arrow"/>
+  <path d="M780,206 C806,206 812,206 840,206" class="dash"/>
+  <path d="M780,412 C806,412 812,412 840,334" class="dash"/>
+  <path d="M780,412 C806,412 812,412 840,458" class="dash"/>
+  <path d="M780,532 C806,532 812,532 840,592" class="arrow"/>
+  <path d="M840,592 C812,592 806,592 780,646" class="arrow"/>
+  <path d="M440,646 C410,646 395,646 370,400" class="arrow"/>
+
+  <!-- Notes -->
+  <text x="70" y="720" class="t3">注：匹配推荐结果用于“参考答案/相似问答”展示，也作为模型上下文增强。</text>
+</svg>

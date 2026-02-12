@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="860" viewBox="0 0 1280 860">
+  <defs>
+    <style>
+      .t1{font:700 20px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#111827}
+      .t2{font:700 13px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#111827}
+      .t3{font:500 12px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#374151}
+      .t4{font:600 12px 'Inter', 'Segoe UI', Arial, sans-serif; fill:#111827}
+      .card{fill:#ffffff; stroke:#e5e7eb; stroke-width:2}
+      .head{fill:#f9fafb; stroke:#e5e7eb; stroke-width:2}
+      .rel{stroke:#111827; stroke-width:2; fill:none; marker-end:url(#m)}
+      .rel2{stroke:#6b7280; stroke-width:2; fill:none; marker-end:url(#m2)}
+      .pk{fill:#111827}
+      .fk{fill:#6b7280}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#111827"/>
+    </marker>
+    <marker id="m2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="860" fill="#ffffff"/>
+  <text x="40" y="56" class="t1">数据库 E-R 图（核心业务表）</text>
+  <text x="40" y="82" class="t3">MySQL：用户/鉴权、会话消息、质量评估、提示词模板、编程问答数据集、文件与考勤</text>
+
+  <!-- User -->
+  <rect x="40" y="120" width="340" height="168" rx="14" class="card"/>
+  <rect x="40" y="120" width="340" height="46" rx="14" class="head"/>
+  <text x="58" y="149" class="t2">auth_user（Django 内置）</text>
+  <text x="58" y="184" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="58" y="206" class="t3">username, password, is_staff ...</text>
+  <text x="58" y="228" class="t3">date_joined, last_login ...</text>
+
+  <!-- UserProfile -->
+  <rect x="40" y="320" width="340" height="140" rx="14" class="card"/>
+  <rect x="40" y="320" width="340" height="46" rx="14" class="head"/>
+  <text x="58" y="349" class="t2">django_auth_userprofile</text>
+  <text x="58" y="384" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="58" y="406" class="t3"><tspan class="fk">FK</tspan> user_id (OneToOne)</text>
+  <text x="58" y="428" class="t3">role, created_at, updated_at</text>
+
+  <!-- Token -->
+  <rect x="40" y="492" width="340" height="140" rx="14" class="card"/>
+  <rect x="40" y="492" width="340" height="46" rx="14" class="head"/>
+  <text x="58" y="521" class="t2">authtoken_token</text>
+  <text x="58" y="556" class="t3"><tspan class="pk">PK</tspan> key</text>
+  <text x="58" y="578" class="t3"><tspan class="fk">FK</tspan> user_id</text>
+  <text x="58" y="600" class="t3">created</text>
+
+  <!-- Thread -->
+  <rect x="460" y="120" width="360" height="154" rx="14" class="card"/>
+  <rect x="460" y="120" width="360" height="46" rx="14" class="head"/>
+  <text x="478" y="149" class="t2">django_qa_conversationthread</text>
+  <text x="478" y="184" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="478" y="206" class="t3"><tspan class="fk">FK</tspan> owner_id → auth_user.id</text>
+  <text x="478" y="228" class="t3">title, created_at, updated_at</text>
+
+  <!-- Message -->
+  <rect x="460" y="310" width="360" height="206" rx="14" class="card"/>
+  <rect x="460" y="310" width="360" height="46" rx="14" class="head"/>
+  <text x="478" y="339" class="t2">django_qa_conversationmessage</text>
+  <text x="478" y="374" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="478" y="396" class="t3"><tspan class="fk">FK</tspan> thread_id → thread.id</text>
+  <text x="478" y="418" class="t3">role, content, created_at</text>
+  <text x="478" y="440" class="t3">citations_json, tool_events_json</text>
+
+  <!-- Evaluation -->
+  <rect x="460" y="550" width="360" height="210" rx="14" class="card"/>
+  <rect x="460" y="550" width="360" height="46" rx="14" class="head"/>
+  <text x="478" y="579" class="t2">django_qa_answerevaluation</text>
+  <text x="478" y="614" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="478" y="636" class="t3"><tspan class="fk">FK</tspan> message_id (OneToOne)</text>
+  <text x="478" y="658" class="t3">syntax_score, logic_score</text>
+  <text x="478" y="680" class="t3">utility_score, readability_score</text>
+  <text x="478" y="702" class="t3">total_score, analysis_report, created_at</text>
+
+  <!-- PromptTemplate -->
+  <rect x="880" y="120" width="360" height="176" rx="14" class="card"/>
+  <rect x="880" y="120" width="360" height="46" rx="14" class="head"/>
+  <text x="898" y="149" class="t2">django_qa_prompttemplate</text>
+  <text x="898" y="184" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="898" y="206" class="t3">scene, version, is_active</text>
+  <text x="898" y="228" class="t3">system_prompt, user_prompt_template</text>
+  <text x="898" y="250" class="t3">created_at, updated_at</text>
+
+  <!-- Dataset -->
+  <rect x="880" y="330" width="360" height="246" rx="14" class="card"/>
+  <rect x="880" y="330" width="360" height="46" rx="14" class="head"/>
+  <text x="898" y="359" class="t2">django_qa_programmingqapair</text>
+  <text x="898" y="394" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="898" y="416" class="t3">question_id, answer_id（唯一约束）</text>
+  <text x="898" y="438" class="t3">title, question_body, answer_body</text>
+  <text x="898" y="460" class="t3">tags_json, question_score, answer_score</text>
+  <text x="898" y="482" class="t3">view_count, question_creation_date</text>
+  <text x="898" y="504" class="t3">question_code_snippets_json</text>
+  <text x="898" y="526" class="t3">answer_code_snippets_json, created_at</text>
+
+  <!-- UserFile -->
+  <rect x="880" y="610" width="360" height="168" rx="14" class="card"/>
+  <rect x="880" y="610" width="360" height="46" rx="14" class="head"/>
+  <text x="898" y="639" class="t2">django_utils_userfile</text>
+  <text x="898" y="674" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="898" y="696" class="t3"><tspan class="fk">FK</tspan> uploader_id → auth_user.id</text>
+  <text x="898" y="718" class="t3">file, original_name, size, content_type</text>
+  <text x="898" y="740" class="t3">created_at</text>
+
+  <!-- Attendance -->
+  <rect x="40" y="664" width="340" height="136" rx="14" class="card"/>
+  <rect x="40" y="664" width="340" height="46" rx="14" class="head"/>
+  <text x="58" y="693" class="t2">django_utils_attendance</text>
+  <text x="58" y="728" class="t3"><tspan class="pk">PK</tspan> id</text>
+  <text x="58" y="750" class="t3"><tspan class="fk">FK</tspan> user_id → auth_user.id</text>
+  <text x="58" y="772" class="t3">date（唯一），sign_in/out, status</text>
+
+  <!-- Relationships -->
+  <path d="M380,200 C420,200 420,200 460,200" class="rel"/>
+  <text x="392" y="188" class="t3">1..N</text>
+  <text x="428" y="214" class="t3">owner</text>
+
+  <path d="M640,274 L640,310" class="rel"/>
+  <text x="650" y="298" class="t3">1..N</text>
+
+  <path d="M640,516 L640,550" class="rel"/>
+  <text x="650" y="540" class="t3">1..1</text>
+
+  <path d="M210,288 L210,320" class="rel2"/>
+  <text x="222" y="310" class="t3">1..1</text>
+
+  <path d="M210,460 L210,492" class="rel2"/>
+  <text x="222" y="486" class="t3">1..N</text>
+
+  <path d="M210,288 C210,288 210,640 210,664" class="rel2"/>
+  <text x="222" y="636" class="t3">1..N</text>
+
+  <path d="M380,210 C740,210 740,688 880,688" class="rel2"/>
+  <text x="706" y="676" class="t3">1..N</text>
+  <text x="750" y="706" class="t3">uploads</text>
+
+  <!-- Legend -->
+  <text x="880" y="806" class="t4">标记：</text>
+  <text x="930" y="806" class="t3"><tspan class="pk">PK</tspan> 主键</text>
+  <text x="1000" y="806" class="t3"><tspan class="fk">FK</tspan> 外键</text>
+</svg>

@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+.trae/
+.env
+database/
+media/
+output/
+ui/node_modules/
+ui/dist/
+data/*.parquet
+*.sqlite3
+data/stackoverflow-python-questions.jsonl
+

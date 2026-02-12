@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模型对比报告</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Microsoft YaHei"; margin: 24px; color: #111827; }
+      h1 { margin: 0 0 8px; font-size: 20px; }
+      .muted { color: #6b7280; font-size: 12px; margin-bottom: 16px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      th, td { padding: 8px; border-bottom: 1px solid #f3f4f6; text-align: left; }
+      th { color: #374151; font-weight: 600; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eef2ff; color: #3730a3; font-size: 12px; font-weight: 600; }
+      .warn { background: #fff7ed; color: #9a3412; }
+      .ok { background: #ecfdf5; color: #065f46; }
+      @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <h1>主流编程领域大模型核心能力对比</h1>
+    <div class="muted" id="meta"></div>
+    <div class="grid">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+          <div style="font-weight:700;">四维雷达图</div>
+          <div id="best" class="badge"></div>
+        </div>
+        <div style="height: 320px;"><canvas id="radar"></canvas></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px;">平均延迟（ms）</div>
+        <div style="height: 320px;"><canvas id="lat"></canvas></div>
+      </div>
+      <div class="card" style="grid-column: 1 / -1;">
+        <div style="font-weight:700; margin-bottom:8px;">汇总表</div>
+        <table id="table"></table>
+      </div>
+    </div>
+
+    <script>
+      const data = {"generated_at": "2026-02-10T13:51:31.602679+00:00", "tasks": [{"id": "sem_01", "dimension": "问答语义理解", "kind": "json_fields"}, {"id": "sem_02", "dimension": "问答语义理解", "kind": "json_fields"}, {"id": "sem_03", "dimension": "问答语义理解", "kind": "json_fields"}, {"id": "sem_04", "dimension": "问答语义理解", "kind": "json_fields"}, {"id": "code_01", "dimension": "代码逻辑分析", "kind": "exact"}, {"id": "code_02", "dimension": "代码逻辑分析", "kind": "exact"}, {"id": "code_03", "dimension": "代码逻辑分析", "kind": "exact"}, {"id": "code_04", "dimension": "代码逻辑分析", "kind": "exact"}, {"id": "reason_01", "dimension": "推理精度", "kind": "number"}, {"id": "reason_02", "dimension": "推理精度", "kind": "number"}, {"id": "reason_03", "dimension": "推理精度", "kind": "number"}, {"id": "reason_04", "dimension": "推理精度", "kind": "number"}], "models": {"zhipu": {"skipped": true, "reason": "API_KEY 未配置"}, "qwen": {"skipped": true, "reason": "API_KEY 未配置"}, "deepseek": {"skipped": true, "reason": "API_KEY 未配置"}}, "best_model": null};
+      const models = data.models || {};
+      const modelNames = Object.keys(models).filter((k) => !models[k].skipped);
+      const best = data.best_model || "";
+
+      document.getElementById("best").textContent = best ? `综合最优：${best}` : "未产生最优模型（可能未配置密钥）";
+      document.getElementById("best").className = best ? "badge ok" : "badge warn";
+      document.getElementById("meta").textContent = `生成时间（UTC）：${data.generated_at || ""}  |  参与模型：${Object.keys(models).join(", ")}`;
+
+      const labels = ["问答语义理解", "代码逻辑分析", "推理精度", "运行效率"];
+      const colors = ["#2563eb", "#16a34a", "#f97316", "#7c3aed", "#0ea5e9"];
+
+      const radarDatasets = modelNames.map((name, idx) => {
+        const info = models[name] || {};
+        const ds = info.dimension_scores || {};
+        const values = [
+          Number(ds["问答语义理解"] || 0),
+          Number(ds["代码逻辑分析"] || 0),
+          Number(ds["推理精度"] || 0),
+          Number(info.efficiency_score || 0),
+        ];
+        return {
+          label: name,
+          data: values,
+          borderColor: colors[idx % colors.length],
+          backgroundColor: "rgba(37, 99, 235, 0.08)",
+          borderWidth: 2,
+          pointRadius: 2,
+        };
+      });
+
+      new Chart(document.getElementById("radar"), {
+        type: "radar",
+        data: { labels, datasets: radarDatasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 1,
+              ticks: { stepSize: 0.2 },
+            },
+          },
+          plugins: {
+            legend: { position: "bottom" },
+          },
+        },
+      });
+
+      const latLabels = modelNames;
+      const latValues = modelNames.map((name) => Number((models[name] || {}).avg_latency_ms || 0));
+      new Chart(document.getElementById("lat"), {
+        type: "bar",
+        data: {
+          labels: latLabels,
+          datasets: [{
+            label: "avg_latency_ms",
+            data: latValues,
+            backgroundColor: latLabels.map((_, idx) => colors[idx % colors.length]),
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true },
+          },
+        },
+      });
+
+      const table = document.getElementById("table");
+      const header = `
+        <tr>
+          <th>模型</th>
+          <th>语义理解</th>
+          <th>代码逻辑</th>
+          <th>推理精度</th>
+          <th>运行效率</th>
+          <th>平均延迟(ms)</th>
+          <th>总分</th>
+          <th>状态</th>
+        </tr>`;
+
+      const rows = Object.keys(models).map((name) => {
+        const info = models[name] || {};
+        if (info.skipped) {
+          return `<tr>
+            <td>${name}</td>
+            <td colspan="6"></td>
+            <td><span class="badge warn">跳过</span> ${info.reason || ""}</td>
+          </tr>`;
+        }
+        const ds = info.dimension_scores || {};
+        const s1 = Number(ds["问答语义理解"] || 0).toFixed(2);
+        const s2 = Number(ds["代码逻辑分析"] || 0).toFixed(2);
+        const s3 = Number(ds["推理精度"] || 0).toFixed(2);
+        const s4 = Number(info.efficiency_score || 0).toFixed(2);
+        const lat = Number(info.avg_latency_ms || 0).toFixed(1);
+        const total = Number(info.total_score || 0).toFixed(3);
+        const badge = (name === best) ? `<span class="badge ok">最优</span>` : `<span class="badge">参与</span>`;
+        return `<tr>
+          <td>${name}</td>
+          <td>${s1}</td>
+          <td>${s2}</td>
+          <td>${s3}</td>
+          <td>${s4}</td>
+          <td>${lat}</td>
+          <td>${total}</td>
+          <td>${badge}</td>
+        </tr>`;
+      }).join("");
+
+      table.innerHTML = header + rows;
+    </script>
+  </body>
+</html>
